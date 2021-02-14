@@ -1,11 +1,12 @@
 package com.binance.client;
 
-import com.alibaba.fastjson.JSONObject;
+import com.binance.client.exception.BinanceApiException;
 import com.binance.client.impl.BinanceApiInternalFactory;
 import com.binance.client.model.ResponseResult;
-import com.binance.client.model.market.*;
 import com.binance.client.model.enums.*;
+import com.binance.client.model.market.*;
 import com.binance.client.model.trade.*;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * All methods in this interface will be blocked until the RestAPI response.
  * <p>
  * If the invoking failed or timeout, the
- * {@link com.binance.client.exception.BinanceApiException} will be thrown.
+ * {@link BinanceApiException} will be thrown.
  */
 public interface SyncRequestClient {
 
@@ -152,8 +153,8 @@ public interface SyncRequestClient {
      * @return Order.
      */
     Order postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
-            TimeInForce timeInForce, String quantity, String price, String reduceOnly,
-            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType);
+                    TimeInForce timeInForce, String quantity, String price, String reduceOnly,
+                    String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType);
 
     /**
      * Cancel an active order.
@@ -199,7 +200,7 @@ public interface SyncRequestClient {
      * @param positionSide SHORT, LONG, BOTH
      * @return
      */
-    JSONObject addIsolatedPositionMargin(String symbolName, int type, String amount, PositionSide positionSide);
+    JsonObject addIsolatedPositionMargin(String symbolName, int type, String amount, PositionSide positionSide);
 
     /**
      *  get position margin history
@@ -217,7 +218,7 @@ public interface SyncRequestClient {
      *
      * @return ResponseResult.
      */
-    JSONObject getPositionSide();
+    JsonObject getPositionSide();
 
     /**
      * Check an order's status.

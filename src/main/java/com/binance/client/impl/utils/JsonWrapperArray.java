@@ -1,8 +1,9 @@
 package com.binance.client.impl.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+
 import com.binance.client.exception.BinanceApiException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,15 +11,15 @@ import java.util.LinkedList;
 
 public class JsonWrapperArray {
 
-    private JSONArray array = null;
+    private JsonArray array = null;
 
-    public JsonWrapperArray(JSONArray array) {
+    public JsonWrapperArray(JsonArray array) {
         this.array = array;
     }
 
     public JsonWrapper getJsonObjectAt(int index) {
         if (array != null && array.size() > index) {
-            JSONObject object = (JSONObject) array.get(index);
+            JsonObject object = (JsonObject) array.get(index);
             if (object == null) {
                 throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR,
                         "[Json] Cannot get object at index " + index + " in array");
@@ -30,13 +31,13 @@ public class JsonWrapperArray {
         }
     }
 
-    public void add(JSON val) {
+    public void add(JsonElement val) {
         this.array.add(val);
     }
 
     public JsonWrapperArray getArrayAt(int index) {
         if (array != null && array.size() > index) {
-            JSONArray newArray = (JSONArray) array.get(index);
+            JsonArray newArray = (JsonArray) array.get(index);
             if (newArray == null) {
                 throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR,
                         "[Json] Cannot get array at index " + index + " in array");
@@ -48,7 +49,7 @@ public class JsonWrapperArray {
         }
     }
 
-    private Object getObjectAt(int index) {
+    private JsonElement getObjectAt(int index) {
         if (array != null && array.size() > index) {
             return array.get(index);
         } else {
@@ -59,7 +60,7 @@ public class JsonWrapperArray {
 
     public long getLongAt(int index) {
         try {
-            return (Long) getObjectAt(index);
+            return getObjectAt(index).getAsLong();
         } catch (Exception e) {
             throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR,
                     "[Json] Cannot get long at index " + index + " in array: " + e.getMessage());
@@ -69,7 +70,7 @@ public class JsonWrapperArray {
 
     public Integer getIntegerAt(int index) {
         try {
-            return (Integer) getObjectAt(index);
+            return getObjectAt(index).getAsInt();
         } catch (Exception e) {
             throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR,
                     "[Json] Cannot get integer at index " + index + " in array: " + e.getMessage());
@@ -90,7 +91,7 @@ public class JsonWrapperArray {
     public String getStringAt(int index) {
 
         try {
-            return (String) getObjectAt(index);
+            return getObjectAt(index).getAsString();
         } catch (RuntimeException e) {
             throw new BinanceApiException(null, e.getMessage());
         }
@@ -99,38 +100,36 @@ public class JsonWrapperArray {
 
     public void forEach(Handler<JsonWrapper> objectHandler) {
         array.forEach((object) -> {
-            if (!(object instanceof JSONObject)) {
+            if (!(object instanceof JsonObject)) {
                 throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR, "[Json] Parse array error in forEach");
             }
-            objectHandler.handle(new JsonWrapper((JSONObject) object));
+            objectHandler.handle(new JsonWrapper((JsonObject) object));
         });
     }
 
     public void forEachAsArray(Handler<JsonWrapperArray> objectHandler) {
         array.forEach((object) -> {
-            if (!(object instanceof JSONArray)) {
+            if (!(object instanceof JsonArray)) {
                 throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR,
                         "[Json] Parse array error in forEachAsArray");
             }
-            objectHandler.handle(new JsonWrapperArray((JSONArray) object));
+            objectHandler.handle(new JsonWrapperArray((JsonArray) object));
         });
     }
 
     public void forEachAsString(Handler<String> objectHandler) {
         array.forEach((object) -> {
-            if (!(object instanceof String)) {
+            if (object.getAsString() == null) {
                 throw new BinanceApiException(BinanceApiException.RUNTIME_ERROR,
                         "[Json] Parse array error in forEachAsString");
             }
-            objectHandler.handle((String) object);
+            objectHandler.handle(object.getAsString());
         });
     }
 
     public List<String> convert2StringList() {
         List<String> result = new LinkedList<>();
-        this.forEachAsString((item) -> {
-            result.add(item);
-        });
+        this.forEachAsString(result::add);
         return result;
     }
 

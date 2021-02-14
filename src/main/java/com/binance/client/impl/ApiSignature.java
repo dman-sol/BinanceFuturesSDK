@@ -1,13 +1,15 @@
 package com.binance.client.impl;
 
-import com.binance.client.exception.BinanceApiException;
 import com.binance.client.constant.BinanceApiConstants;
+import com.binance.client.exception.BinanceApiException;
 import com.binance.client.impl.utils.UrlParamsBuilder;
+import org.apache.commons.codec.binary.Hex;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Hex;
 
 class ApiSignature {
 

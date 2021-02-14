@@ -1,11 +1,11 @@
 package com.binance.client.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.ResponseResult;
-import com.binance.client.model.market.*;
 import com.binance.client.model.enums.*;
+import com.binance.client.model.market.*;
 import com.binance.client.model.trade.*;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class SyncRequestImpl implements SyncRequestClient {
     }
     
     @Override
-    public List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime, 
-            Long endTime, Integer limit) {
+    public List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime,
+                                            Long endTime, Integer limit) {
         return RestApiInvoker.callSync(requestImpl.getCandlestick(symbol, interval, startTime, endTime, limit));
     }
     
@@ -87,8 +87,8 @@ public class SyncRequestImpl implements SyncRequestClient {
     
     @Override
     public Order postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
-            TimeInForce timeInForce, String quantity, String price, String reduceOnly,
-            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType) {
+                           TimeInForce timeInForce, String quantity, String price, String reduceOnly,
+                           String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType) {
         return RestApiInvoker.callSync(requestImpl.postOrder(symbol, side, positionSide, orderType,
                 timeInForce, quantity, price, reduceOnly, 
                 newClientOrderId, stopPrice, workingType,newOrderRespType));
@@ -120,7 +120,7 @@ public class SyncRequestImpl implements SyncRequestClient {
     }
 
     @Override
-    public JSONObject addIsolatedPositionMargin(String symbolName, int type, String amount, PositionSide positionSide) {
+    public JsonObject addIsolatedPositionMargin(String symbolName, int type, String amount, PositionSide positionSide) {
         return RestApiInvoker.callSync(requestImpl.addPositionMargin(symbolName, type, amount, positionSide));
     }
 
@@ -129,9 +129,8 @@ public class SyncRequestImpl implements SyncRequestClient {
         return RestApiInvoker.callSync(requestImpl.getPositionMarginHistory(symbolName, type, startTime, endTime, limit));
     }
 
-
     @Override
-    public JSONObject getPositionSide() {
+    public JsonObject getPositionSide() {
         return RestApiInvoker.callSync(requestImpl.getPositionSide());
     }
 

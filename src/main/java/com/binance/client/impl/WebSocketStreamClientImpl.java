@@ -1,10 +1,11 @@
 package com.binance.client.impl;
 
+import com.binance.client.model.enums.CandlestickInterval;
+import com.binance.client.model.user.UserDataUpdateEvent;
 import com.binance.client.SubscriptionClient;
 import com.binance.client.SubscriptionErrorHandler;
 import com.binance.client.SubscriptionListener;
 import com.binance.client.SubscriptionOptions;
-import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
 import com.binance.client.model.event.CandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
@@ -13,7 +14,6 @@ import com.binance.client.model.event.OrderBookEvent;
 import com.binance.client.model.event.SymbolBookTickerEvent;
 import com.binance.client.model.event.SymbolMiniTickerEvent;
 import com.binance.client.model.event.SymbolTickerEvent;
-import com.binance.client.model.user.UserDataUpdateEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -168,7 +168,7 @@ public class WebSocketStreamClientImpl implements SubscriptionClient {
 
     @Override
     public void subscribeUserDataEvent(String listenKey,
-            SubscriptionListener<UserDataUpdateEvent> subscriptionListener, 
+            SubscriptionListener<UserDataUpdateEvent> subscriptionListener,
             SubscriptionErrorHandler errorHandler) {
         createConnection(
                 requestImpl.subscribeUserDataEvent(listenKey, subscriptionListener, errorHandler));

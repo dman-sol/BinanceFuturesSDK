@@ -2,7 +2,6 @@ package com.binance.client.model.enums;
 
 import com.binance.client.impl.utils.EnumLookup;
 
-
 /**
  * withdraw, deposit.
  */

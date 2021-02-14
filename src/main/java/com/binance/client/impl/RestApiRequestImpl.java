@@ -1,29 +1,29 @@
 package com.binance.client.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.binance.client.RequestOptions;
 import com.binance.client.exception.BinanceApiException;
 import com.binance.client.impl.utils.JsonWrapperArray;
 import com.binance.client.impl.utils.UrlParamsBuilder;
 import com.binance.client.model.ResponseResult;
+import com.binance.client.model.enums.*;
 import com.binance.client.model.market.*;
 import com.binance.client.model.trade.*;
-import com.binance.client.model.enums.*;
-
 import okhttp3.Request;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 class RestApiRequestImpl {
 
-    private String apiKey;
-    private String secretKey;
-    private String serverUrl;
+    private final String apiKey;
+    private final String secretKey;
+    private final String serverUrl;
 
     RestApiRequestImpl(String apiKey, String secretKey, RequestOptions options) {
         this.apiKey = apiKey;
@@ -208,9 +208,7 @@ class RestApiRequestImpl {
                 symbol.setTimeInForce(item.getJsonArray("orderTypes").convert2StringList());
                 List<List<Map<String, String>>> valList = new LinkedList<>();
                 JsonWrapperArray valArray = item.getJsonArray("filters");
-                valArray.forEach((val) -> {
-                    valList.add(val.convert2DictList());
-                });
+                valArray.forEach((val) -> valList.add(val.convert2DictList()));
                 symbol.setFilters(valList);
                 symbolList.add(symbol);
             });
@@ -385,7 +383,7 @@ class RestApiRequestImpl {
 
         request.jsonParser = (jsonWrapper -> {
             List<MarkPrice> result = new LinkedList<>();
-            JsonWrapperArray dataArray = new JsonWrapperArray(new JSONArray());
+            JsonWrapperArray dataArray = new JsonWrapperArray(new JsonArray());
             if (jsonWrapper.containKey("data")) {
                 dataArray = jsonWrapper.getJsonArray("data");
             } else {
@@ -440,7 +438,7 @@ class RestApiRequestImpl {
 
         request.jsonParser = (jsonWrapper -> {
             List<PriceChangeTicker> result = new LinkedList<>();
-            JsonWrapperArray dataArray = new JsonWrapperArray(new JSONArray());
+            JsonWrapperArray dataArray = new JsonWrapperArray(new JsonArray());
             if (jsonWrapper.containKey("data")) {
                 dataArray = jsonWrapper.getJsonArray("data");
             } else {
@@ -480,7 +478,7 @@ class RestApiRequestImpl {
 
         request.jsonParser = (jsonWrapper -> {
             List<SymbolPrice> result = new LinkedList<>();
-            JsonWrapperArray dataArray = new JsonWrapperArray(new JSONArray());
+            JsonWrapperArray dataArray = new JsonWrapperArray(new JsonArray());
             if (jsonWrapper.containKey("data")) {
                 dataArray = jsonWrapper.getJsonArray("data");
             } else {
@@ -506,7 +504,7 @@ class RestApiRequestImpl {
 
         request.jsonParser = (jsonWrapper -> {
             List<SymbolOrderBook> result = new LinkedList<>();
-            JsonWrapperArray dataArray = new JsonWrapperArray(new JSONArray());
+            JsonWrapperArray dataArray = new JsonWrapperArray(new JsonArray());
             if (jsonWrapper.containKey("data")) {
                 dataArray = jsonWrapper.getJsonArray("data");
             } else {
@@ -567,36 +565,36 @@ class RestApiRequestImpl {
         request.request = createRequestByPostWithSignature("/fapi/v1/batchOrders", builder);
 
         request.jsonParser = (jsonWrapper -> {
-            JSONObject jsonObject = jsonWrapper.getJson();
+            JsonObject jsonObject = jsonWrapper.getJson();
 
             // success results
             List<Object> listResult = new ArrayList<>();
-            JSONArray jsonArray = (JSONArray) jsonObject.get("data");
+            JsonArray jsonArray = (JsonArray) jsonObject.get("data");
             jsonArray.forEach(obj -> {
-                if (((JSONObject) obj).containsKey("code")) {
+                if (((JsonObject) obj).has("code")) {
                     ResponseResult responseResult = new ResponseResult();
-                    responseResult.setCode(((JSONObject) obj).getInteger("code"));
-                    responseResult.setMsg(((JSONObject) obj).getString("msg"));
+                    responseResult.setCode(((JsonObject) obj).get("code").getAsInt());
+                    responseResult.setMsg(((JsonObject) obj).get("msg").getAsString());
                     listResult.add(responseResult);
                 } else {
                     Order o = new Order();
-                    JSONObject jsonObj = (JSONObject) obj;
-                    o.setClientOrderId(jsonObj.getString("clientOrderId"));
-                    o.setCumQuote(jsonObj.getBigDecimal("cumQuote"));
-                    o.setExecutedQty(jsonObj.getBigDecimal("executedQty"));
-                    o.setOrderId(jsonObj.getLong("orderId"));
-                    o.setOrigQty(jsonObj.getBigDecimal("origQty"));
-                    o.setPrice(jsonObj.getBigDecimal("price"));
-                    o.setReduceOnly(jsonObj.getBoolean("reduceOnly"));
-                    o.setSide(jsonObj.getString("side"));
-                    o.setPositionSide(jsonObj.getString("positionSide"));
-                    o.setStatus(jsonObj.getString("status"));
-                    o.setStopPrice(jsonObj.getBigDecimal("stopPrice"));
-                    o.setSymbol(jsonObj.getString("symbol"));
-                    o.setTimeInForce(jsonObj.getString("timeInForce"));
-                    o.setType(jsonObj.getString("type"));
-                    o.setUpdateTime(jsonObj.getLong("updateTime"));
-                    o.setWorkingType(jsonObj.getString("workingType"));
+                    JsonObject jsonObj = (JsonObject) obj;
+                    o.setClientOrderId(jsonObj.get("clientOrderId").getAsString());
+                    o.setCumQuote(jsonObj.get("cumQuote").getAsBigDecimal());
+                    o.setExecutedQty(jsonObj.get("executedQty").getAsBigDecimal());
+                    o.setOrderId(jsonObj.get("orderId").getAsLong());
+                    o.setOrigQty(jsonObj.get("origQty").getAsBigDecimal());
+                    o.setPrice(jsonObj.get("price").getAsBigDecimal());
+                    o.setReduceOnly(jsonObj.get("reduceOnly").getAsBoolean());
+                    o.setSide(jsonObj.get("side").getAsString());
+                    o.setPositionSide(jsonObj.get("positionSide").getAsString());
+                    o.setStatus(jsonObj.get("status").getAsString());
+                    o.setStopPrice(jsonObj.get("stopPrice").getAsBigDecimal());
+                    o.setSymbol(jsonObj.get("symbol").getAsString());
+                    o.setTimeInForce(jsonObj.get("timeInForce").getAsString());
+                    o.setType(jsonObj.get("type").getAsString());
+                    o.setUpdateTime(jsonObj.get("updateTime").getAsLong());
+                    o.setWorkingType(jsonObj.get("workingType").getAsString());
                     listResult.add(o);
                 }
             });
@@ -606,8 +604,8 @@ class RestApiRequestImpl {
     }
 
     RestApiRequest<Order> postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
-            TimeInForce timeInForce, String quantity, String price, String reduceOnly,
-            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType) {
+                                    TimeInForce timeInForce, String quantity, String price, String reduceOnly,
+                                    String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType) {
         RestApiRequest<Order> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol)
@@ -679,8 +677,8 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<JSONObject> addPositionMargin(String symbolName, int type, String amount, PositionSide positionSide) {
-        RestApiRequest<JSONObject> request = new RestApiRequest<>();
+    RestApiRequest<JsonObject> addPositionMargin(String symbolName, int type, String amount, PositionSide positionSide) {
+        RestApiRequest<JsonObject> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbolName)
                 .putToUrl("amount", amount)
@@ -689,11 +687,11 @@ class RestApiRequestImpl {
         request.request = createRequestByPostWithSignature("/fapi/v1/positionMargin", builder);
 
         request.jsonParser = (jsonWrapper -> {
-            JSONObject result = new JSONObject();
-            result.put("code", jsonWrapper.getInteger("code"));
-            result.put("msg", jsonWrapper.getString("msg"));
-            result.put("amount", jsonWrapper.getDouble("amount"));
-            result.put("type", jsonWrapper.getInteger("type"));
+            JsonObject result = new JsonObject();
+            result.addProperty("code", jsonWrapper.getInteger("code"));
+            result.addProperty("msg", jsonWrapper.getString("msg"));
+            result.addProperty("amount", jsonWrapper.getDouble("amount"));
+            result.addProperty("type", jsonWrapper.getInteger("type"));
             return result;
         });
         return request;
@@ -727,14 +725,14 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<JSONObject> getPositionSide() {
-        RestApiRequest<JSONObject> request = new RestApiRequest<>();
+    RestApiRequest<JsonObject> getPositionSide() {
+        RestApiRequest<JsonObject> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build();
         request.request = createRequestByGetWithSignature("/fapi/v1/positionSide/dual", builder);
 
         request.jsonParser = (jsonWrapper -> {
-            JSONObject result = new JSONObject();
-            result.put("dualSidePosition", jsonWrapper.getBoolean("dualSidePosition"));
+            JsonObject result = new JsonObject();
+            result.addProperty("dualSidePosition", jsonWrapper.getBoolean("dualSidePosition"));
             return result;
         });
         return request;
@@ -798,36 +796,36 @@ class RestApiRequestImpl {
         request.request = createRequestByDeleteWithSignature("/fapi/v1/batchOrders", builder);
 
         request.jsonParser = (jsonWrapper -> {
-            JSONObject jsonObject = jsonWrapper.getJson();
+            JsonObject jsonObject = jsonWrapper.getJson();
 
             // success results
             List<Object> listResult = new ArrayList<>();
-            JSONArray jsonArray = (JSONArray) jsonObject.get("data");
+            JsonArray jsonArray = (JsonArray) jsonObject.get("data");
             jsonArray.forEach(obj -> {
-                if (((JSONObject)obj).containsKey("code")) {
+                if (((JsonObject)obj).has("code")) {
                     ResponseResult responseResult = new ResponseResult();
-                    responseResult.setCode(((JSONObject)obj).getInteger("code"));
-                    responseResult.setMsg(((JSONObject)obj).getString("msg"));
+                    responseResult.setCode(((JsonObject)obj).get("code").getAsInt());
+                    responseResult.setMsg(((JsonObject)obj).get("msg").getAsString());
                     listResult.add(responseResult);
                 } else {
                     Order o = new Order();
-                    JSONObject jsonObj = (JSONObject) obj;
-                    o.setClientOrderId(jsonObj.getString("clientOrderId"));
-                    o.setCumQuote(jsonObj.getBigDecimal("cumQuote"));
-                    o.setExecutedQty(jsonObj.getBigDecimal("executedQty"));
-                    o.setOrderId(jsonObj.getLong("orderId"));
-                    o.setOrigQty(jsonObj.getBigDecimal("origQty"));
-                    o.setPrice(jsonObj.getBigDecimal("price"));
-                    o.setReduceOnly(jsonObj.getBoolean("reduceOnly"));
-                    o.setSide(jsonObj.getString("side"));
-                    o.setPositionSide(jsonObj.getString("positionSide"));
-                    o.setStatus(jsonObj.getString("status"));
-                    o.setStopPrice(jsonObj.getBigDecimal("stopPrice"));
-                    o.setSymbol(jsonObj.getString("symbol"));
-                    o.setTimeInForce(jsonObj.getString("timeInForce"));
-                    o.setType(jsonObj.getString("type"));
-                    o.setUpdateTime(jsonObj.getLong("updateTime"));
-                    o.setWorkingType(jsonObj.getString("workingType"));
+                    JsonObject jsonObj = (JsonObject) obj;
+                    o.setClientOrderId(jsonObj.get("clientOrderId").getAsString());
+                    o.setCumQuote(jsonObj.get("cumQuote").getAsBigDecimal());
+                    o.setExecutedQty(jsonObj.get("executedQty").getAsBigDecimal());
+                    o.setOrderId(jsonObj.get("orderId").getAsLong());
+                    o.setOrigQty(jsonObj.get("origQty").getAsBigDecimal());
+                    o.setPrice(jsonObj.get("price").getAsBigDecimal());
+                    o.setReduceOnly(jsonObj.get("reduceOnly").getAsBoolean());
+                    o.setSide(jsonObj.get("side").getAsString());
+                    o.setPositionSide(jsonObj.get("positionSide").getAsString());
+                    o.setStatus(jsonObj.get("status").getAsString());
+                    o.setStopPrice(jsonObj.get("stopPrice").getAsBigDecimal());
+                    o.setSymbol(jsonObj.get("symbol").getAsString());
+                    o.setTimeInForce(jsonObj.get("timeInForce").getAsString());
+                    o.setType(jsonObj.get("type").getAsString());
+                    o.setUpdateTime(jsonObj.get("updateTime").getAsLong());
+                    o.setWorkingType(jsonObj.get("workingType").getAsString());
                     listResult.add(o);
                 }
             });
@@ -1072,8 +1070,8 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<List<MyTrade>> getAccountTrades(String symbol, Long startTime, Long endTime, 
-            Long fromId, Integer limit) {
+    RestApiRequest<List<MyTrade>> getAccountTrades(String symbol, Long startTime, Long endTime,
+                                                   Long fromId, Integer limit) {
         RestApiRequest<List<MyTrade>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol)
@@ -1110,8 +1108,8 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<List<Income>> getIncomeHistory(String symbol, IncomeType incomeType, Long startTime, Long endTime, 
-            Integer limit) {
+    RestApiRequest<List<Income>> getIncomeHistory(String symbol, IncomeType incomeType, Long startTime, Long endTime,
+                                                  Integer limit) {
         RestApiRequest<List<Income>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol)
@@ -1187,8 +1185,8 @@ class RestApiRequestImpl {
                 .putToUrl("startTime", startTime)
                 .putToUrl("endTime", endTime)
                 .putToUrl("limit", limit);
-        
-        
+
+
 //        request.request = createRequestByGetWithSignature("/gateway-api//v1/public/future/data/openInterestHist", builder);
         request.request = createRequestByGetWithSignature("/futures/data/openInterestHist", builder);
 

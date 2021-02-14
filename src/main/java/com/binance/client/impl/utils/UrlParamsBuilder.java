@@ -1,6 +1,5 @@
 package com.binance.client.impl.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.binance.client.exception.BinanceApiException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -11,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
+
+import com.google.gson.Gson;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
@@ -173,10 +174,10 @@ public class UrlParamsBuilder {
             if (postBodyMap.map.isEmpty()) {
                 return RequestBody.create(JSON_TYPE, "");
             } else {
-                return RequestBody.create(JSON_TYPE, JSON.toJSONString(postBodyMap.map));
+                return RequestBody.create(JSON_TYPE, new Gson().toJson(postBodyMap.map));
             }
         } else {
-            return RequestBody.create(JSON_TYPE, JSON.toJSONString(postBodyMap.stringListMap));
+            return RequestBody.create(JSON_TYPE, new Gson().toJson(postBodyMap.stringListMap));
 
         }
     }
@@ -186,7 +187,7 @@ public class UrlParamsBuilder {
     }
 
     public String buildUrlToJsonString() {
-        return JSON.toJSONString(paramsMap.map);
+        return new Gson().toJson(paramsMap.map);
     }
 
     /**

@@ -3,13 +3,13 @@ package com.binance.client.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.binance.client.impl.utils.Channels;
 import com.binance.client.impl.utils.JsonWrapper;
 import com.binance.client.impl.utils.JsonWrapperArray;
+import com.binance.client.model.enums.CandlestickInterval;
 
 import com.binance.client.SubscriptionErrorHandler;
 import com.binance.client.SubscriptionListener;
-import com.binance.client.impl.utils.Channels;
-import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
 import com.binance.client.model.event.CandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
@@ -447,8 +447,8 @@ class WebsocketRequestImpl {
     }
 
     WebsocketRequest<UserDataUpdateEvent> subscribeUserDataEvent(String listenKey,
-            SubscriptionListener<UserDataUpdateEvent> subscriptionListener,
-            SubscriptionErrorHandler errorHandler) {
+                                                                 SubscriptionListener<UserDataUpdateEvent> subscriptionListener,
+                                                                 SubscriptionErrorHandler errorHandler) {
         InputChecker.checker()
                 .shouldNotNull(listenKey, "listenKey")
                 .shouldNotNull(subscriptionListener, "listener");

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.binance.client.impl.BinanceApiInternalFactory;
 import com.binance.client.model.enums.CandlestickInterval;
+import com.binance.client.model.user.UserDataUpdateEvent;
 import com.binance.client.model.event.AggregateTradeEvent;
 import com.binance.client.model.event.CandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
@@ -12,7 +13,6 @@ import com.binance.client.model.event.OrderBookEvent;
 import com.binance.client.model.event.SymbolBookTickerEvent;
 import com.binance.client.model.event.SymbolMiniTickerEvent;
 import com.binance.client.model.event.SymbolTickerEvent;
-import com.binance.client.model.user.UserDataUpdateEvent;
 
 /***
  * The subscription client interface, it is used for subscribing any market data
@@ -234,7 +234,7 @@ public interface SubscriptionClient {
      *                     or error happen between client and Binance server.
      */
     void subscribeUserDataEvent(String listenKey,
-            SubscriptionListener<UserDataUpdateEvent> callback, SubscriptionErrorHandler errorHandler);
+                                SubscriptionListener<UserDataUpdateEvent> callback, SubscriptionErrorHandler errorHandler);
 
 
 }
